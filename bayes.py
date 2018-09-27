@@ -7,6 +7,8 @@
 # 测试算法: 计算错误率。
 # 使用算法: 一个常见的朴素贝叶斯应用是文档分类。可以在任意的分类场景中使用朴素贝叶斯分类器，不一定非要是文本。
 
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
 
 from numpy import *
 
@@ -37,7 +39,7 @@ def createVocabList(dataSet):
     for document in dataSet:
         # 操作符 | 用于求两个集合的并集
         vocabSet = vocabSet | set(document)
-    return list(vocabSet)
+    return list(vocabSet)  # 将字典类型{}转变成列表类型[]
 
 
 def setOfWords2Vec(vocabList, inputSet):
@@ -57,7 +59,8 @@ def setOfWords2Vec(vocabList, inputSet):
             print("the word: %s 不在集合里" % word)
     return returnVec
 
-def _trainNB0(trainMatrix,trainCategory):
+
+def _trainNB0(trainMatrix, trainCategory):
     """
     训练数据原版
     :param trainMatrix: 文件单词矩阵[[1,0,1,1,1....],[],[]...]
@@ -70,7 +73,77 @@ def _trainNB0(trainMatrix,trainCategory):
     numWords = len(trainMatrix[0])
     # 侮辱性文件的出现概率，即trainCategory中所有的1的个数
     # 代表的就是多少个侮辱性文件，与文件的总数相除就得到了侮辱性文件的出现概率
-    pAbusive =  sum(trainCategory) / float(numTrainDocs)
+    pAbusive = sum(trainCategory) / float(numTrainDocs)
+    # 构造单词出现次数列表 zeros()返回来一个给定形状和类型的用0填充的数组
+    p0Num = zeros(numWords)  # [0,0,0,0,....] 用来放0类别的单词矩阵
+    p1Num = zeros(numWords)  # [0,0,0,0,....] 用来放1类别的单词矩阵
+
+    # 整个数据集单词出现总数
+    p0Denom = 0.0
+    p1Denom = 0.0
+    for i in range(numTrainDocs):
+        # 遍历所有的文件，如果是侮辱性文件，就计算此侮辱性文件中出现的侮辱性单词的个数
+        if trainCategory[i] == 1:
+            # [0,1,1,....] -> [0,1,1,...] 把侮辱性单词放进p1Num
+            p1Num += trainMatrix[i]
+            p1Denom += sum(trainMatrix[i])  # 因为侮辱性单词都设置成了1，所以求和就可以算出它们出现的次数
+        else:
+            # 如果不是侮辱性文件，则计算非侮辱性文件中出现的侮辱性单词的个数
+            p0Num += trainMatrix[i]
+            p0Denom += sum(trainMatrix[i])
+    # 类别1，即侮辱性文档的[P(F1|C1),P(F2|C1),P(F3|C1),P(F4|C1),P(F5|C1)....]列表
+    # 即 在1类别下，每个单词出现次数的占比
+    p1Vect = p0Num / p0Denom
+    # 类别0，即正常文档的[P(F1|C0),P(F2|C0),P(F3|C0),P(F4|C0),P(F5|C0)....]列表
+    # 即 在0类别下，每个单词出现次数的占比
+    p0Vect = p0Num / p0Denom
+    return p0Vect, p1Vect, pAbusive
+
+
+def trainNB0(trainMatrix, trainCategory):
+    """
+    训练数据优化版本
+    :param trainMatrix: 文件单词矩阵
+    :param trainCategory: 文件对应的类别
+    :return:
+    """
+    # 总文件数
+    numTrainDocs = len(trainMatrix)
+    # 总单词数
+    numWords = len(trainMatrix[0])
+    # 侮辱性文件的出现概率
+    pAbusive = sum(trainCategory) / float(numTrainDocs)
     # 构造单词出现次数列表
-    p0Num = zeros(numWords) # [0,0,0,0,....]
-    p1Num = zeros(numWords) # [0,0,0,0,....]
+    # p0Num 正常的统计
+    # p1Num 侮辱的统计
+    # 避免单词列表中的任何一个单词为0，而导致最后的乘积为0，所以将每个单词的出现次数初始化为 1
+    p0Num = ones(numWords)  # [0,0......]->[1,1,1,1,1.....]
+    p1Num = ones(numWords)
+
+    # 整个数据集单词出现总数，2.0根据样本/实际调查结果调整分母的值（2主要是避免分母为0，当然值可以调整）
+    # p0Denom 正常的统计
+    # p1Denom 侮辱的统计
+    p0Denom = 2.0
+    p1Denom = 2.0
+    for i in range(numTrainDocs):
+        if trainCategory[i] == 1:
+            # 累加辱骂词的频次
+            p1Num += trainMatrix[i]
+            # 对每篇文章的辱骂的频次 进行统计汇总
+            p1Denom += sum(trainMatrix[i])
+        else:
+            p0Num += trainMatrix[i]
+            p0Denom += sum(trainMatrix[i])
+    # 类别1，即侮辱性文档的[log(P(F1|C1)),log(P(F2|C1)),log(P(F3|C1)),log(P(F4|C1)),log(P(F5|C1))....]列表
+    p1Vect = log(p1Num / p1Denom)
+    # 类别0，即正常文档的[log(P(F1|C0)),log(P(F2|C0)),log(P(F3|C0)),log(P(F4|C0)),log(P(F5|C0))....]列表
+    p0Vect = log(p0Num / p0Denom)
+    return p0Vect, p1Vect, pAbusive
+
+
+def classifyNB(vec2Classify, p0Vec, p1Vec, pClass1):
+    """
+    使用算法：
+        # 将乘法转换为加法
+        乘法：P(C|F1F2...Fn) = P（F1F2...Fn|C)
+    """
