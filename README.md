@@ -1,4 +1,4 @@
-# Maths
+# Maths-and-AIlearning
 
 #### 数学结构算法以及机器学习
 
