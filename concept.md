@@ -47,5 +47,5 @@
         - 将该词条的数目除以总词条数目得到的条件概率（P(词条|类别)）
     - 返回该文档属于每个类别的条件概率（P(类别|文档的所有词条)）
 
-17. 条件概率：指事件 A 在另外一个事件 B 已经发生条件下的发生概率。条件概率表示为：P（A|B），读作“在 B 的条件下 A 的概率”。[详细](https://github.com/YaliixxG/Maths-and-AIlearning/blob/master/Conditional-probability.md)
+17. 条件概率：指事件 A 在另外一个事件 B 已经发生条件下的发生概率。条件概率表示为：P（A|B），读作“在 B 的条件下 A 的概率”。[详细](https://github.com/YaliixxG/Maths-and-AIlearning/blob/master/Conditional-probability.md) 222222
 
