@@ -48,3 +48,5 @@
     - 返回该文档属于每个类别的条件概率（P(类别|文档的所有词条)）
 
 17. 条件概率：指事件 A 在另外一个事件 B 已经发生条件下的发生概率。条件概率表示为：P（A|B），读作“在 B 的条件下 A 的概率”。[详细](https://github.com/YaliixxG/Maths-and-AIlearning/blob/master/Conditional-probability.md)
+
+18.数据结构：数据元素相互之间存在的一种和多种特定的关系集合，包括两个部分组成逻辑结构，存储结构。[详细](https://github.com/YaliixxG/Maths-and-AIlearning/blob/master/data-structure.md)
