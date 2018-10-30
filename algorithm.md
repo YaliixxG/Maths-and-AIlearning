@@ -4,7 +4,7 @@
 
 - 冒泡排序（Bubble Sort）：比较任何两个相邻的项，如果第一个比第二个大，则交换它们；元素项向上移动至正确的顺序，好似气泡上升至表面一般，因此得名。
 
-![冒泡排序](./images/maopao.GIF)
+![冒泡排序](./images/maopao.gif)
 
 ```js
 function bubbleSort(arr) {
@@ -24,7 +24,7 @@ function bubbleSort(arr) {
 
 - 选择排序（Selection Sort）：每一次从待排序的数据元素中选出最小（或最大）的一个元素，存放在序列的起始位置，以此循环，直至排序完毕。
 
-![选择排序](./images/xuanze.GIF)
+![选择排序](./images/xuanze.gif)
 
 ```js
 function selectionSort(arr) {
@@ -48,7 +48,7 @@ function selectionSort(arr) {
 
 - 插入排序（Insertion Sort）：讲一个数据插入到已经排好序的有序数据中，从而得到一个新的，个数加一的有序数据，此算法适用于少量数据的排序，时间复杂度为 O(n^2)。
 
-![插入排序](./images/charu.GIF)
+![插入排序](./images/charu.gif)
 
 ```js
 function insertionSort(arr) {
@@ -69,7 +69,7 @@ function insertionSort(arr) {
 
 - 归并排序（Merge Sort）：将原始序列切分成较小的序列，直到每个小序列无法再切分，然后在执行合并，即将小序列归并成大的序列，合并过程进行比较排序，直到最后只有一个排序完毕的大序列，时间复杂度为 O(n log n)。
 
-![归并排序](./images/guibing.GIF)
+![归并排序](./images/guibing.gif)
 
 ```js
 function mergeSort(arr) {
@@ -106,7 +106,7 @@ function merge(left, right) {
 
 - 快速排序（Quick Sort）：通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的数据都要小，然后再按此方法对这两部分数据分别进行上述递归排序，以此达到整个数据变成有序序列，时间复杂度 O(n log n)。
 
-![快速排序](./images/kuaisu.GIF)
+![快速排序](./images/kuaisu.gif)
 
 ```js
 function quickSort(array, left, right) {
